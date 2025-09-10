@@ -4,16 +4,14 @@
  * 
  * @format
  */
-import { enableScreens } from 'react-native-screens';
-enableScreens();
-import 'react-native-gesture-handler';
+
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from './components/HomeScreen';
 import KoleksiSeriNovaScreen from './components/KoleksiSeriNovaScreen';
-import ARScannerScreen from './components/ARScannerScreen2';
+import ARScannerScreen from './components/ARScannerScreen';
 
 // Define navigation types - improves TypeScript experience with navigation
 type RootStackParamList = {
