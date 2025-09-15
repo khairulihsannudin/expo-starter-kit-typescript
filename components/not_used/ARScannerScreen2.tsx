@@ -17,8 +17,8 @@ import {
   ViroARSceneNavigator,
   ViroTrackingReason,
 } from "@reactvision/react-viro";
-import { CardRecognition } from '../utils/CardRecognition';
-import { CollectionManager } from '../utils/CollectionManager';
+import { CardRecognition } from '../../utils/CardRecognition';
+import { CollectionManager } from '../../utils/CollectionManager';
 
 const { width, height } = Dimensions.get('window');
 

@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 
 // Placeholders for your assets
 const novaLogo = require('../assets/robot.png');
-// const cardBg1 = require('../assets/card1.png'); // Replace with your actual card background
-// const cardBg2 = require('../assets/card2.png'); // Replace with your actual card background
+const cardBg1 = require('../assets/bgAR.png'); 
+const cardBg2 = require('../assets/bgGameAwal.png'); 
 
 const HomeScreen = ({ navigation }: any) => {
   // Navigate to KoleksiSeriNovaScreen
@@ -23,18 +23,21 @@ const HomeScreen = ({ navigation }: any) => {
       </View>
       {/* Cards */}
       <TouchableOpacity style={styles.card} onPress={handleKoleksiPress} activeOpacity={0.8}>
-        <View style={styles.cardBg}>
-          <Text style={styles.cardTitle}>AYO!!</Text>
-          <Text style={styles.cardText}>KOLEKSI SERI NOVA THE STARBOOK DAN TAKLUKAN SELURUH MISINYA BERSAMA NOVA!!</Text>
-        </View>
+        <ImageBackground source={cardBg1} style={styles.cardBgImage} resizeMode="cover">
+          <View style={styles.cardBg}>
+            <Text style={styles.cardTitle}>AYO!!</Text>
+            <Text style={styles.cardText}>KOLEKSI SERI NOVA THE STARBOOK DAN TAKLUKAN SELURUH MISINYA BERSAMA NOVA!!</Text>
+          </View>
+        </ImageBackground>
       </TouchableOpacity>
-      <View style={styles.card}>
-        <View style={styles.cardBg}>
-          <Text style={styles.cardTitle}>LESGOO!!</Text>
-          <Text style={styles.cardText}>MULAI PETUALANGAN DI DUNIA GIGI BERSAMA NOVA!!</Text>
-          <Image source={novaLogo} style={styles.cardNova} />
-        </View>
-      </View>
+      <TouchableOpacity style={styles.card} onPress={handleKoleksiPress} activeOpacity={0.8}>
+        <ImageBackground source={cardBg2} style={styles.cardBgImage} resizeMode="cover">
+          <View style={styles.cardBg}>
+            <Text style={styles.cardTitleGame}>LESGOO!!</Text>
+            <Text style={styles.cardTextGame}>MULAI PETUALANGAN DI DUNIA GIGI BERSAMA NOVA!!</Text>
+          </View>
+        </ImageBackground>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -50,11 +53,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+    rowGap: 50,
   },
   headerIcon: {
-    width: 48,
-    height: 48,
-    marginRight: 8,
+    width: 60,
+    height: 60,
+    marginRight: -15,
+    position: 'relative',
+    top: -4,
+    zIndex: 1,
   },
   headerLabelBox: {
     backgroundColor: '#fff',
@@ -77,6 +84,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     elevation: 4,
     backgroundColor: '#fff',
+    height: 150,
   },
   cardBg: {
     width: '100%',
@@ -84,6 +92,11 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'center',
     position: 'relative',
+  },
+  cardBgImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
   },
   cardTitle: {
     fontSize: 22,
@@ -96,14 +109,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#222',
     fontWeight: '600',
+    marginLeft: '30%',
     textAlign: 'right',
   },
-  cardNova: {
-    width: 64,
-    height: 64,
-    position: 'absolute',
-    right: 16,
-    bottom: 8,
+  cardTitleGame: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#222',
+    marginBottom: 8,
+    textAlign: 'left',
+  },
+  cardTextGame: {
+    fontSize: 16,
+    color: '#222',
+    fontWeight: '600',
+    marginRight: '30%',
+    textAlign: 'left',
   },
 });
 

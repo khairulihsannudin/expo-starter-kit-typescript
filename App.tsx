@@ -14,7 +14,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { View, Text, StyleSheet, Image, StatusBar, Animated, ImageBackground } from 'react-native';
 import HomeScreen from './components/HomeScreen';
 import KoleksiSeriNovaScreen from './components/KoleksiSeriNovaScreen';
-import ARScannerScreen from './components/ARScannerScreen2';
+import ARScannerScreen from './components/ARScannerScreen';
 
 const robotImg = require('./assets/robot.png'); 
 const loadingBg = require('./assets/loading.png');

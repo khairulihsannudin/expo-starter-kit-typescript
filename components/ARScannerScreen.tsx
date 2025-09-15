@@ -1,102 +1,143 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Alert } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import {
   ViroARScene,
   ViroText,
-  ViroTrackingStateConstants,
   ViroARSceneNavigator,
-  ViroTrackingReason,
+  ViroImage,
+  ViroNode,
+  ViroAnimations,
+  ViroARImageMarker,
+  ViroARTrackingTargets
 } from "@reactvision/react-viro";
-import { CardRecognition } from '../utils/CardRecognition';
-import { CollectionManager } from '../utils/CollectionManager';
+import { 
+  ViroTrackingStateConstants,
+  ViroARTrackingReasonConstants
+} from "@reactvision/react-viro";
 
 interface ARScannerScreenProps {
-  navigation?: any;
+  navigation: any;
 }
 
-// AR Scene component - follows App2.tsx approach
-const NovaARScene = () => {
-  const [text, setText] = useState("Initializing AR...");
+// Register AR image targets - these are the images your app will recognize
+ViroARTrackingTargets.createTargets({
+  "card1": {
+    source: require('../assets/card_images/card1.jpeg'),
+    orientation: "Up",
+    physicalWidth: 0.05, // real world width in meters
+    type: 'Image' // Explicitly specify type
+  },
+});
 
-  function onInitialized(state: any, reason: ViroTrackingReason) {
-    console.log("AR tracking state:", state, reason);
+// Robot image asset
+const robotImg = require('../assets/robot.png');
+
+// AR Scene component that uses image markers
+const NovaARScene = () => {
+  const [isTracking, setIsTracking] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
+
+  // Add a fallback timer to show robot if marker isn't detected
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isTracking) {
+        setShowFallback(true);
+        console.log("Showing fallback robot");
+      }
+    }, 8000); // 8 seconds timeout
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  function onInitialized(state: any, reason: any) {
+    console.log("AR tracking state:", state);
     if (state === ViroTrackingStateConstants.TRACKING_NORMAL) {
-      setText("AR Ready! Point at Nova Card QR Code");
+      setIsTracking(true);
     } else if (state === ViroTrackingStateConstants.TRACKING_UNAVAILABLE) {
-      setText("AR Unavailable");
-    } else {
-      setText("Initializing AR...");
+      setIsTracking(false);
     }
   }
 
+  // Animation for the robot image - Add bobbleCycle
+  ViroAnimations.registerAnimations({
+    bobble: {
+      properties: {
+        positionY: "+=0.01"
+      },
+      easing: "EaseInEaseOut",
+      duration: 1000
+    },
+    bobbleDown: {
+      properties: {
+        positionY: "-=0.01"
+      },
+      easing: "EaseInEaseOut",
+      duration: 1000
+    }
+  });
+
   return (
     <ViroARScene onTrackingUpdated={onInitialized}>
-      <ViroText
-        text={text}
-        scale={[0.5, 0.5, 0.5]}
-        position={[0, 0, -1]}
-        style={styles.arText}
-      />
+      {/* Card 1 Image Marker */}
+      <ViroARImageMarker
+        target={"card1"}
+        onAnchorFound={() => {
+          console.log("Card found!");
+          setIsTracking(true);
+        }}
+      >
+        {/* The key is centering the robot on the marker with correct position */}
+        <ViroNode position={[1, 1, 1]} scale={[1, 1, 1]}>
+          {/* 2D Image of Nova Robot - positioned exactly at center with a small y-offset */}
+          <ViroImage
+            height={0.25}
+            width={0.25}
+            position={[1, 1, 1]} // Positioned exactly over marker with slight lift
+            source={robotImg}
+            animation={{
+              name: "bobbleCycle",
+              run: true,
+              loop: true
+            }}
+          />
+        </ViroNode>
+      </ViroARImageMarker>
+
+      {/* Fallback robot when marker detection fails */}
+      {/* {showFallback && !isTracking && (
+        <ViroNode position={[0, 0, -0.5]} scale={[1, 1, 1]}>
+          <ViroImage
+            height={0.25}
+            width={0.25}
+            position={[0, 0, 0]} // Centered in front of camera
+            source={robotImg}
+            animation={{
+              name: "bobbleCycle",
+              run: true,
+              loop: true
+            }}
+          />
+        </ViroNode>
+      )} */}
+
+      {/* Status text - only shown when not tracking any image and no fallback */}
+      {!isTracking && !showFallback && (
+        <ViroText
+          text="Point camera at Nova card"
+          scale={[0.5, 0.5, 0.5]}
+          position={[0, 0, -0.5]} // Positioned closer to camera for better visibility
+          style={styles.instructionText}
+          outerStroke={{type: "Outline", width: 2, color: '#000'}}
+        />
+      )}
     </ViroARScene>
   );
 };
 
+// Main component
 const ARScannerScreen: React.FC<ARScannerScreenProps> = ({ navigation }) => {
-  const goBack = () => {
-    navigation && navigation.goBack();
-  };
-
-  // Test function for manual QR input
-  const testQRCode = () => {
-    Alert.prompt(
-      'Test QR Code',
-      'Masukkan QR Code untuk testing:',
-      [
-        { text: 'Batal', style: 'cancel' },
-        { 
-          text: 'Test', 
-          onPress: async (qrCode?: string) => {
-            if (!qrCode) return;
-            
-            // Use direct QR code recognition
-            const result = CardRecognition.recognizeQRCode(qrCode);
-            
-            if (result.success && result.card) {
-              // Add card to collection
-              const collectedCard = await CollectionManager.addCard(result.card);
-              const isNewCard = collectedCard.scanCount === 1;
-              
-              Alert.alert(
-                isNewCard ? 'Kartu Baru Ditemukan! 🎉' : 'Kartu Ditemukan! ✨',
-                `Nama: ${result.card.name}\n` +
-                `Rarity: ${result.card.rarity}\n` +
-                `Element: ${result.card.element}\n` +
-                `ATK: ${result.card.attack} | DEF: ${result.card.defense} | HP: ${result.card.health}\n\n` +
-                `${result.card.description}`,
-                [
-                  { text: 'OK', onPress: () => {} },
-                  {
-                    text: 'Lihat Koleksi',
-                    onPress: () => navigation.goBack()
-                  }
-                ]
-              );
-            } else {
-              Alert.alert('QR Code Tidak Valid', 'QR Code tidak dikenali sebagai kartu Nova.');
-            }
-          }
-        }
-      ],
-      'plain-text',
-      'NOVA_STARBOT_001_LEGENDARY_TOOTH_GUARDIAN'
-    );
-  };
-
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#000000" />
-      
-      {/* AR Scene - same as in App2.tsx */}
       <ViroARSceneNavigator
         autofocus={true}
         initialScene={{
@@ -105,28 +146,24 @@ const ARScannerScreen: React.FC<ARScannerScreenProps> = ({ navigation }) => {
         style={styles.arView}
       />
       
-      {/* Header Overlay */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={goBack}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>AR Scanner</Text>
+        <Text style={styles.headerTitle}>Nova AR Experience</Text>
         <View style={styles.placeholder} />
       </View>
       
-      {/* Instructions Overlay */}
       <View style={styles.instructionsContainer}>
-        <Text style={styles.instructionsTitle}>Cara Menggunakan:</Text>
+        <Text style={styles.instructionsTitle}>Nova Card Scanner</Text>
         <Text style={styles.instructionsText}>
-          1. Arahkan kamera ke QR Code pada kartu Nova{'\n'}
-          2. Pastikan QR Code terlihat jelas dalam frame{'\n'}
-          3. AR akan menunjukkan info dari kartu{'\n'}
-          4. Kartu akan otomatis ditambahkan ke koleksi
+          • Point your camera at a Nova card{'\n'}
+          • Hold steady until Nova appears{'\n'}
+          • Nova will appear automatically if needed
         </Text>
-        
-        <TouchableOpacity style={styles.testButton} onPress={testQRCode}>
-          <Text style={styles.testButtonText}>Test QR Code</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -140,9 +177,16 @@ const styles = StyleSheet.create({
   arView: {
     flex: 1,
   },
-  arText: {
+  textStyle: {
     fontFamily: "Arial",
-    fontSize: 28,
+    fontSize: 24,
+    color: "#ffffff",
+    textAlignVertical: "center",
+    textAlign: "center",
+  },
+  instructionText: {
+    fontFamily: "Arial",
+    fontSize: 24,
     color: "#ffffff",
     textAlignVertical: "center",
     textAlign: "center",
@@ -205,20 +249,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     lineHeight: 20,
-  },
-  testButton: {
-    backgroundColor: '#ffe066',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 6,
-    marginTop: 16,
-    alignSelf: 'center',
-  },
-  testButtonText: {
-    color: '#222',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
+  }
 });
 
 export default ARScannerScreen;

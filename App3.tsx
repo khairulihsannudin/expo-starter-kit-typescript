@@ -12,7 +12,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import HomeScreen from './components/HomeScreen';
 import KoleksiSeriNovaScreen from './components/KoleksiSeriNovaScreen';
-import ARScannerScreen from './components/ARScannerScreen2';
+import ARScannerScreen from './components/not_used/ARScannerScreen2';
 
 const robotImg = require('./assets/robot.png'); 
 const loadingBg = require('./assets/loading.png'); 
