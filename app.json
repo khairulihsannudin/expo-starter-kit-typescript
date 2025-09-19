@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-starter-kit-typescript",
-    "slug": "expo-starter-kit-typescript",
+    "name": "novathestarbook",
+    "slug": "novathestarbook",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,7 @@
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to use your camera",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use your microphone"
       },
-      "bundleIdentifier": "com.anonymous.expo-starter-kit-typescript"
+      "bundleIdentifier": "com.anonymous.novathestarbook"
     },
     "android": {
       "adaptiveIcon": {
