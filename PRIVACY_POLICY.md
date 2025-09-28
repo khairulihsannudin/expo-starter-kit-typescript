@@ -6,7 +6,7 @@ Aplikasi **Nova The Starbook** sangat menghargai privasi Anda. Kebijakan privasi
 
 ## Informasi yang Dikumpulkan
 
-Aplikasi ini meminta izin untuk mengakses kamera perangkat Anda. Akses kamera digunakan **hanya** untuk fitur pemindaian kartu trading Nova menggunakan teknologi Augmented Reality (AR). Kami **tidak** mengumpulkan, menyimpan, atau membagikan foto, video, atau data pribadi Anda ke pihak ketiga.
+Aplikasi ini meminta izin untuk mengakses kamera perangkat Anda. Akses kamera digunakan **hanya** untuk fitur pemindaian kartu Nova menggunakan teknologi Augmented Reality (AR). Kami **tidak** mengumpulkan, menyimpan, atau membagikan foto, video, atau data pribadi Anda ke pihak ketiga.
 
 ## Penggunaan Informasi
 
@@ -17,7 +17,7 @@ Aplikasi ini meminta izin untuk mengakses kamera perangkat Anda. Akses kamera di
 ## Izin yang Diminta
 
 Aplikasi ini membutuhkan izin berikut:
-- **Kamera**: Untuk memindai kartu trading Nova dengan AR.
+- **Kamera**: Untuk memindai kartu Nova dengan AR.
 - **Penyimpanan** (opsional): Untuk menyimpan gambar hasil pemindaian jika Anda memilih untuk menyimpannya.
 
 ## Keamanan
