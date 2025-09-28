@@ -30,7 +30,7 @@ Kebijakan privasi ini dapat diperbarui dari waktu ke waktu. Setiap perubahan aka
 
 ## Kontak
 
-Jika Anda memiliki pertanyaan atau masukan terkait kebijakan privasi ini, silakan hubungi kami melalui email: **novastarbook.support@gmail.com**
+Jika Anda memiliki pertanyaan atau masukan terkait kebijakan privasi ini, silakan hubungi kami melalui email: **novathestarbook@gmail.com**
 
 ---
 
