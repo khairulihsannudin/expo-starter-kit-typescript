@@ -1,13 +1,16 @@
 {
   "expo": {
-    "name": "novathestarbook",
-    "slug": "novathestarbook",
+    "name": "Nova The Starbook",
+    "slug": "nova-the-starbook",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "jsEngine": "hermes",
+    "description": "An AR-powered trading card collection app for Nova cards. Scan and collect your favorite Nova trading cards with augmented reality technology.",
+    "keywords": ["AR", "trading cards", "augmented reality", "collection", "nova", "cards"],
+    "privacy": "public",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -19,19 +22,27 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
-        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos",
-        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to use your camera",
-        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use your microphone"
+        "NSPhotoLibraryUsageDescription": "Nova The Starbook needs access to your photo library to save AR scanned card images",
+        "NSPhotoLibraryAddUsageDescription": "Nova The Starbook needs permission to save scanned trading card images to your photo library",
+        "NSCameraUsageDescription": "Nova The Starbook uses your camera to scan and recognize Nova trading cards with AR technology",
+        "NSMicrophoneUsageDescription": "Nova The Starbook may use your microphone for AR sound effects and card scanning feedback"
       },
-      "bundleIdentifier": "com.anonymous.novathestarbook"
+      "bundleIdentifier": "com.novastarbook.app"
     },
     "android": {
+      "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.expostarterkittypescript"
+      "package": "com.novastarbook.app",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
