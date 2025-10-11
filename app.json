@@ -8,8 +8,8 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "jsEngine": "hermes",
-    "description": "An AR-powered trading card collection app for Nova cards. Scan and collect your favorite Nova trading cards with augmented reality technology.",
-    "keywords": ["AR", "trading cards", "augmented reality", "collection", "nova", "cards"],
+    "description": "An AR-powered card collection app for Nova cards. Scan and collect your favorite Nova cards with augmented reality technology.",
+    "keywords": ["AR", "cards", "augmented reality", "collection", "nova", "cards"],
     "privacy": "public",
     "splash": {
       "image": "./assets/splash.png",
@@ -23,8 +23,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Nova The Starbook needs access to your photo library to save AR scanned card images",
-        "NSPhotoLibraryAddUsageDescription": "Nova The Starbook needs permission to save scanned trading card images to your photo library",
-        "NSCameraUsageDescription": "Nova The Starbook uses your camera to scan and recognize Nova trading cards with AR technology",
+        "NSPhotoLibraryAddUsageDescription": "Nova The Starbook needs permission to save scanned  card images to your photo library",
+        "NSCameraUsageDescription": "Nova The Starbook uses your camera to scan and recognize Nova  cards with AR technology",
         "NSMicrophoneUsageDescription": "Nova The Starbook may use your microphone for AR sound effects and card scanning feedback"
       },
       "bundleIdentifier": "com.novastarbook.app"
@@ -32,7 +32,7 @@
     "android": {
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "icon": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.novastarbook.app",

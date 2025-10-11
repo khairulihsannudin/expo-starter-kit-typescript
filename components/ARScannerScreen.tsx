@@ -19,23 +19,61 @@ interface ARScannerScreenProps {
   navigation: any;
 }
 
-// Register AR image targets - these are the images your app will recognize
+// Register AR image targets for cards 1–6
 ViroARTrackingTargets.createTargets({
-  "card1": {
+  card1: {
     source: require('../assets/card_images/card1.jpeg'),
     orientation: "Up",
-    physicalWidth: 0.05, // real world width in meters
-    type: 'Image' // Explicitly specify type
+    physicalWidth: 0.05,
+    type: 'Image'
+  },
+  card2: {
+    source: require('../assets/card_images/card2.png'),
+    orientation: "Up",
+    physicalWidth: 0.05,
+    type: 'Image'
+  },
+  card3: {
+    source: require('../assets/card_images/card3.png'),
+    orientation: "Up",
+    physicalWidth: 0.05,
+    type: 'Image'
+  },
+  card4: {
+    source: require('../assets/card_images/card4.png'),
+    orientation: "Up",
+    physicalWidth: 0.05,
+    type: 'Image'
+  },
+  card5: {
+    source: require('../assets/card_images/card5.png'),
+    orientation: "Up",
+    physicalWidth: 0.05,
+    type: 'Image'
+  },
+  card6: {
+    source: require('../assets/card_images/card6.png'),
+    orientation: "Up",
+    physicalWidth: 0.05,
+    type: 'Image'
   },
 });
 
-// Robot image asset
-const robotImg = require('../assets/robot.png');
+// AR result images for each card
+const arResults: Record<string, any> = {
+  card1: require('../assets/robot.png'),
+  // card2: require('../assets/18.png'),
+  card3: require('../assets/17.png'),
+  card4: require('../assets/18.png'),
+  card5: require('../assets/19.png'),
+  card6: require('../assets/20.png'),
+};
 
 // AR Scene component that uses image markers
 const NovaARScene = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
+  const [currentCard, setCurrentCard] = useState<string | null>(null);
 
   // Add a fallback timer to show robot if marker isn't detected
   useEffect(() => {
@@ -76,56 +114,42 @@ const NovaARScene = () => {
     }
   });
 
+  // Helper to render AR markers for all cards
+  const renderMarkers = () => Object.keys(arResults).map(cardKey => (
+    <ViroARImageMarker
+      key={cardKey}
+      target={cardKey}
+      onAnchorFound={() => {
+        setIsTracking(true);
+        setCurrentCard(cardKey);
+        console.log(`Card ${cardKey} found!`);
+      }}
+    >
+      <ViroNode position={[1, 1, 1]} scale={[1, 1, 1]}>
+        <ViroImage
+          height={0.25}
+          width={0.25}
+          position={[1, 1, 1]}
+          source={arResults[cardKey]}
+          animation={{
+            name: "bobbleCycle",
+            run: true,
+            loop: true
+          }}
+        />
+      </ViroNode>
+    </ViroARImageMarker>
+  ));
+
   return (
     <ViroARScene onTrackingUpdated={onInitialized}>
-      {/* Card 1 Image Marker */}
-      <ViroARImageMarker
-        target={"card1"}
-        onAnchorFound={() => {
-          console.log("Card found!");
-          setIsTracking(true);
-        }}
-      >
-        {/* The key is centering the robot on the marker with correct position */}
-        <ViroNode position={[1, 1, 1]} scale={[1, 1, 1]}>
-          {/* 2D Image of Nova Robot - positioned exactly at center with a small y-offset */}
-          <ViroImage
-            height={0.25}
-            width={0.25}
-            position={[1, 1, 1]} // Positioned exactly over marker with slight lift
-            source={robotImg}
-            animation={{
-              name: "bobbleCycle",
-              run: true,
-              loop: true
-            }}
-          />
-        </ViroNode>
-      </ViroARImageMarker>
-
-      {/* Fallback robot when marker detection fails */}
-      {/* {showFallback && !isTracking && (
-        <ViroNode position={[0, 0, -0.5]} scale={[1, 1, 1]}>
-          <ViroImage
-            height={0.25}
-            width={0.25}
-            position={[0, 0, 0]} // Centered in front of camera
-            source={robotImg}
-            animation={{
-              name: "bobbleCycle",
-              run: true,
-              loop: true
-            }}
-          />
-        </ViroNode>
-      )} */}
-
+      {renderMarkers()}
       {/* Status text - only shown when not tracking any image and no fallback */}
       {!isTracking && !showFallback && (
         <ViroText
           text="Point camera at Nova card"
           scale={[0.5, 0.5, 0.5]}
-          position={[0, 0, -0.5]} // Positioned closer to camera for better visibility
+          position={[0, 0, -0.5]}
           style={styles.instructionText}
           outerStroke={{type: "Outline", width: 2, color: '#000'}}
         />
