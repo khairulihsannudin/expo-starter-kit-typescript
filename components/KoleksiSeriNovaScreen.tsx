@@ -1,14 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native';
 import { CollectionManager, CollectedCard } from '../utils/CollectionManager';
 import { CardRecognition } from '../utils/CardRecognition';
 
+// Dynamic card image mapping based on Nova ID
+const getCardImage = (novaId: string) => {
+  const cardImageMap: Record<string, any> = {
+    'NOVA_001': require('../assets/card_images/card1.jpeg'),
+    'NOVA_002': require('../assets/card_images/card2.png'),
+    'NOVA_003': require('../assets/card_images/card3.png'),
+    'NOVA_004': require('../assets/card_images/card4.png'),
+    'NOVA_005': require('../assets/card_images/card5.png'),
+    'NOVA_006': require('../assets/card_images/card6.png'),
+  };
+  return cardImageMap[novaId] || require('../assets/card_images/card1.jpeg'); // fallback to card1
+};
+
 const novaLogo = require('../assets/robot.png');
+
+// AR result images mapping for saving
+const arResultImages = {
+  'NOVA_001': require('../assets/card_images/card1.jpeg'),
+  // 'NOVA_002': require('../assets/17.png'),
+  'NOVA_003': require('../assets/card_images/card3.png'),
+  'NOVA_004': require('../assets/card_images/card4.png'),
+  'NOVA_005': require('../assets/card_images/card5.png'),
+  'NOVA_006': require('../assets/card_images/card6.png'),
+};
 
 const KoleksiSeriNovaScreen = ({ navigation }: any) => {
   const [collection, setCollection] = useState<CollectedCard[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({ totalCards: 0, totalScans: 0 });
+  const [selectedCardIndex, setSelectedCardIndex] = useState(0);
 
   // Load collection on component mount
   useEffect(() => {
@@ -34,6 +58,21 @@ const KoleksiSeriNovaScreen = ({ navigation }: any) => {
     setRefreshing(false);
   };
 
+  // Save AR result image to photo library
+  const saveARImage = async (cardId: string) => {
+    // For now, just show a message
+    // In a full implementation, you would need:
+    // 1. expo-media-library for saving to photo library
+    // 2. expo-file-system for file operations
+    // 3. Convert require() assets to savable format
+    
+    Alert.alert(
+      'Fitur Simpan',
+      `Gambar AR untuk kartu ${cardId} akan disimpan ke galeri foto.\n\nUntuk implementasi penuh, install:\n- expo-media-library\n- expo-file-system`,
+      [{ text: 'OK' }]
+    );
+  };
+
   const handleScanPress = () => {
     navigation && navigation.navigate && navigation.navigate('ARScanner');
   };
@@ -42,14 +81,26 @@ const KoleksiSeriNovaScreen = ({ navigation }: any) => {
   const renderCardItem = (card: CollectedCard, index: number) => {
     const rarityColor = CardRecognition.getRarityColor(card.rarity);
     const elementColor = CardRecognition.getElementColor(card.element);
-    
+    const isSelected = index === selectedCardIndex;
+
+
     return (
-      <View key={card.id} style={[styles.cardItem, { borderColor: rarityColor }]}>
+      <TouchableOpacity
+        key={card.id}
+        style={[styles.cardItem, { borderColor: isSelected ? '#ffe066' : rarityColor, borderWidth: isSelected ? 3 : 2 }]}
+        onPress={() => setSelectedCardIndex(index)}
+        activeOpacity={0.7}
+      >
         <View style={styles.cardImageContainer}>
-          <Image source={novaLogo} style={styles.cardImage} />
+          <Image source={getCardImage(card.id)} style={styles.cardImage} />
           <View style={[styles.rarityBadge, { backgroundColor: rarityColor }]}>
             <Text style={styles.rarityText}>{card.rarity}</Text>
           </View>
+          {isSelected && (
+            <View style={styles.selectedIndicator}>
+              <Text style={styles.selectedText}>✓</Text>
+            </View>
+          )}
         </View>
         <View style={styles.cardInfo}>
           <Text style={styles.cardName}>{card.name}</Text>
@@ -61,7 +112,7 @@ const KoleksiSeriNovaScreen = ({ navigation }: any) => {
           </Text>
           <Text style={styles.scanCount}>Dipindai: {card.scanCount}x</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -99,8 +150,14 @@ const KoleksiSeriNovaScreen = ({ navigation }: any) => {
       {/* Featured Nova Display */}
       {collection.length > 0 && (
         <View style={styles.novaCardContainer}>
-          <Image source={novaLogo} style={styles.novaImage} />
-          <TouchableOpacity style={styles.saveButton}>
+          <Image 
+            source={arResultImages[collection[selectedCardIndex].id as keyof typeof arResultImages] || require('../assets/17.png')} 
+            style={styles.novaImage} 
+          />
+          <TouchableOpacity 
+            style={styles.saveButton}
+            onPress={() => saveARImage(collection[selectedCardIndex].id)}
+          >
             <Text style={styles.saveButtonText}>Simpan</Text>
           </TouchableOpacity>
         </View>
@@ -108,7 +165,6 @@ const KoleksiSeriNovaScreen = ({ navigation }: any) => {
 
       <View style={styles.tabBar}>
         <Text style={[styles.tab, styles.tabActive]}>Skins</Text>
-        <Text style={styles.tab}>Senjata</Text>
       </View>
 
       {/* Collection Grid */}
@@ -349,6 +405,24 @@ const styles = StyleSheet.create({
     color: '#222',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  selectedIndicator: {
+    position: 'absolute',
+    bottom: -4,
+    right: -4,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#ffe066',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  selectedText: {
+    color: '#222',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
 
